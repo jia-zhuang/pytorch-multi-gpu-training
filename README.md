@@ -188,3 +188,11 @@ if torch.distributed.get_rank() == 0:
     model_to_save.save_pretrained(args.output_dir)
     tokenizer.save_pretrained(args.output_dir)
 ```
+
+### 参考
+
+[Pytorch 多GPU训练-单运算节点-All you need](https://www.cnblogs.com/walter-xh/p/11586507.html)
+
+[WRITING DISTRIBUTED APPLICATIONS WITH PYTORCH](https://pytorch.org/tutorials/intermediate/dist_tuto.html)
+
+[pytorch 多GPU训练总结（DataParallel的使用）](https://blog.csdn.net/weixin_40087578/article/details/87186613)
