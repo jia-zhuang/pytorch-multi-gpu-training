@@ -189,6 +189,30 @@ if torch.distributed.get_rank() == 0:
     tokenizer.save_pretrained(args.output_dir)
 ```
 
+#### 同一台机器上跑多个 ddp task
+
+假设想在一台有4核GPU的电脑上跑两个ddp task，每个task使用两个核，很可能会需要如下错误：
+
+```
+RuntimeError: Address already in use
+RuntimeError: NCCL error in: /opt/conda/conda-bld/pytorch_1544081127912/work/torch/lib/c10d/ProcessGroupNCCL.cpp:260, unhandled system error
+```
+
+原因是两个ddp task通讯地址冲突，这时候需要显示地设置每个task的地址
+
+> specifying a different master_addr and master_port in torch.distributed.launch
+
+```bash
+# 第一个task
+export CUDA_VISIBLE_DEVICES="0,1" 
+python -m torch.distributed.launch --nproc_per_node=2 --master_addr=127.0.0.1 --master_port=29501 train.py
+
+# 第二个task
+export CUDA_VISIBLE_DEVICES="2,3" 
+python -m torch.distributed.launch --nproc_per_node=2 --master_addr=127.0.0.2 --master_port=29502 train.py
+```
+
+
 ### 参考
 
 [Pytorch 多GPU训练-单运算节点-All you need](https://www.cnblogs.com/walter-xh/p/11586507.html)
