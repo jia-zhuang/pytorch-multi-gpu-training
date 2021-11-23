@@ -1,6 +1,8 @@
 import os
 os.environ["CUDA_VISIBLE_DEVICES"]="0,1,2,3"
 import argparse
+import random
+import numpy as np
 import torch
 import torch.optim as optim
 import torch.nn as nn
@@ -17,6 +19,13 @@ args = parser.parse_args()
 torch.cuda.set_device(args.local_rank)
 device = torch.device('cuda', args.local_rank)
 torch.distributed.init_process_group(backend='nccl')
+
+# 固定随机种子
+seed = 42
+random.seed(seed)
+np.random.seed(seed)
+torch.manual_seed(seed)
+torch.cuda.manual_seed_all(seed)
 
 batch_size = 64
 
